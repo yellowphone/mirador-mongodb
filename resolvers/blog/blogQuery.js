@@ -1,12 +1,12 @@
 const mongodb = require('mongodb')
 const ObjectID = mongodb.ObjectId;
 
-const findItinerary = async (parent, args, context, info) => {
+const findBlog = async (parent, args, context, info) => {
     const result = await context.database.collection('blogs').findOne({_id: new ObjectID(args.id)})
 
     return result.insertedId
 }
 
 module.exports = {
-    findItinerary
+    findBlog
 }
