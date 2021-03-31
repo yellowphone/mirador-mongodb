@@ -1,10 +1,7 @@
-const hello = (parent, args, context, info) => {
-    context.database.collection('itineraries').findOne().then((data) => {
-        console.log(data)
-    })
-    return "ok"
-}
+const {
+    findItinerary
+} = require('./itinerary/itineraryQuery')
 
 module.exports = {
-    hello
+    findItinerary
 }

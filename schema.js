@@ -1,8 +1,12 @@
 const { gql } = require('apollo-server');
 
 const typeDefs = gql`
+    type Mutation {
+        createItinerary: String
+    }
+
     type Query {
-        hello: String
+        findItinerary: String
     }
 `
 

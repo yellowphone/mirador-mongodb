@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 4001;
 
 const { ApolloServer } = require('apollo-server-express');
 const Query = require('./resolvers/Query');
+const Mutation = require('./resolvers/Mutation');
 const typeDefs = require('./schema');
 
 const MongoClient = require('mongodb').MongoClient;
@@ -35,7 +36,8 @@ catch(e) {
 
 
 const resolvers = {
-    Query
+    Query,
+    Mutation
 }
 
 const server = new ApolloServer({
