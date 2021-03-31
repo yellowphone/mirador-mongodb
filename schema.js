@@ -1,6 +1,7 @@
 const { gql } = require('apollo-server');
 
 const typeDefs = gql`
+    scalar Json
 
     type Mutation {
         createItinerary: String
@@ -12,8 +13,8 @@ const typeDefs = gql`
     }
 
     type Query {
-        findItinerary(id: String): String
-        findBlog(id: String): String
+        findItinerary(id: String): Json
+        findBlog(id: String): Json
     }
 `
 
