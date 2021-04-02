@@ -1,20 +1,24 @@
 const {
     createItinerary,
-    updateItinerary,
+    insertElementToItinerary,
+    deleteElementFromItinerary,
     deleteItinerary
 } = require('./itinerary/itineraryMutation')
 
 const {
     createBlog,
-    updateBlog,
+    insertElementToBlog,
+    deleteElementFromBlog,
     deleteBlog
 } = require('./blog/blogMutation')
 
 module.exports = {
     createItinerary,
-    updateItinerary,
+    insertElementToItinerary,
+    deleteElementFromItinerary,
     deleteItinerary,
     createBlog,
-    updateBlog,
+    insertElementToBlog,
+    deleteElementFromBlog,
     deleteBlog
 }

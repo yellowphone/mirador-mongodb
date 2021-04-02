@@ -5,10 +5,13 @@ const typeDefs = gql`
 
     type Mutation {
         createItinerary(beginning: String, end: String): String
-        updateItinerary(id: String): String
+        insertElementToItinerary(id: String, date: String, element: Json): String
+        deleteElementFromItinerary(id: String, date: String, index: Int): String
         deleteItinerary(id: String): String
         createBlog: String
         updateBlog(id: String): String
+        insertElementToBlog(id: String, element: Json): String
+        deleteElementFromBlog(id: String, index: Int): String
         deleteBlog(id: String): String
     }
 

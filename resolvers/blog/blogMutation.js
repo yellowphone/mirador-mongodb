@@ -1,9 +1,12 @@
 const mongodb = require('mongodb')
 const ObjectID = mongodb.ObjectId;
 
+/**
+ * @noargument
+ */
 const createBlog = async (parent, args, context, info) => {
     const data = {
-        test: "ok"
+        content: []
     }
     const result = await context.database.collection('blogs').insertOne(data)
         .catch(err => console.error(`Create failed with error: ${err}`))
@@ -11,17 +14,41 @@ const createBlog = async (parent, args, context, info) => {
     return result.insertedId
 }
 
-const updateBlog = async (parent, args, context, info) => {
-    const filter = { _id: args.id }
-    // need to change this later once we know structure of document
-    const updateDocument = {}
+/**
+ * @argument id The unique identifier for the mongodb document
+ * @argument element The JSON sub-element for Blog content (experience, txt, image, etc.)
+ */
+const insertElementToBlog = async (parent, args, context, info) => {
+    const filter = { _id: new ObjectID(args.id) }    
 
-    const result = await context.database.collection('blogs').updateOne(filter, updateDocument)
+    const result = await context.database.collection('blogs').updateOne(filter, { $push: { content: args.element } })
+        .catch(err => console.error(`Update failed with error: ${err}`))
+    return result.modifiedCount;
+}
+
+/**
+ * @argument id The unique identifier for the mongodb document
+ * @argument index The index of the JSON sub-element
+ */
+const deleteElementFromBlog = async (parent, args, context, info) => {
+    const filter = { _id: new ObjectID(args.id) }    
+    var data = {}
+    data[`content.${args.index}`] = 1
+
+    await context.database.collection('blogs').updateOne(filter, { $unset: data })
+        .catch(err => console.error(`Update failed with error: ${err}`))
+
+    const result = await context.database.collection('blogs').updateOne(filter, { $pull: { content : null }})
         .catch(err => console.error(`Update failed with error: ${err}`))
 
     return result.modifiedCount;
 }
 
+// update will be findAndModify()
+
+/**
+ * @argument id The unique identifier for the mongodb document
+ */
 const deleteBlog = async (parent, args, context, info) => {
     const result = await context.database.collection('blogs').deleteOne({_id: new ObjectID(args.id)})
         .catch(err => console.error(`Delete failed with error: ${err}`))
@@ -31,6 +58,7 @@ const deleteBlog = async (parent, args, context, info) => {
 
 module.exports = {
     createBlog,
-    updateBlog,
+    insertElementToBlog,
+    deleteElementFromBlog,
     deleteBlog
 }
