@@ -9,7 +9,6 @@ const typeDefs = gql`
         deleteElementFromItinerary(id: String, date: String, index: Int): String
         deleteItinerary(id: String): String
         createBlog: String
-        updateBlog(id: String): String
         insertElementToBlog(id: String, element: Json): String
         deleteElementFromBlog(id: String, index: Int): String
         deleteBlog(id: String): String
