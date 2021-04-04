@@ -1,12 +1,6 @@
 const mongodb = require('mongodb')
 const ObjectID = mongodb.ObjectId;
 
-/**
- * TODO:
- * - Options to create either date - date itinerary / blob itinerary
- * - Update README
- */
-
 const createItinerary = async (parent, args, context, info) => {
 
     const data = {}
