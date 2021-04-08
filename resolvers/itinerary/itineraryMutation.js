@@ -20,7 +20,7 @@ const createItinerary = async (parent, args, context, info) => {
     const result = await context.database.collection('itineraries').insertOne(data)
         .catch(err => console.error(`Create failed with error: ${err}`))
 
-    return result.insertedId
+    return result.ops[0]
 }
 
 /**
