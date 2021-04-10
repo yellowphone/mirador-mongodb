@@ -5,14 +5,9 @@ const createItinerary = async (parent, args, context, info) => {
 
     const data = {}
 
-    // itinerary is created through the card view and no dates are inputted
-    if (args.beginning.length == 0 && args.end.length == 0) {
-        const result = await context.database.collection('itineraries').insertOne(data)
-            .catch(err => console.error(`Create failed with error: ${err}`))
-    }
     // itinerary is created through "/create/itinerary"
-    else {
-        // YYYY-MM-DD
+    if (args.beginning && args.end) {
+        // Date format: YYYY-MM-DD
         const beginningDate = new Date(args.beginning);
         const endDate = new Date(args.end);
 
@@ -26,9 +21,14 @@ const createItinerary = async (parent, args, context, info) => {
 
         const result = await context.database.collection('itineraries').insertOne(data)
             .catch(err => console.error(`Create failed with error: ${err}`))
+        return result.ops[0]
     }
-
-    return result.ops[0]
+    // itinerary is created through the card view and no dates are inputted
+    else {
+        const result = await context.database.collection('itineraries').insertOne(data)
+            .catch(err => console.error(`Create failed with error: ${err}`))
+        return result.ops[0]
+    }
 }
 
 /**
