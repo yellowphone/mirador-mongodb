@@ -5,20 +5,28 @@ const createItinerary = async (parent, args, context, info) => {
 
     const data = {}
 
-    // YYYY-MM-DD
-    const beginningDate = new Date(args.beginning);
-    const endDate = new Date(args.end);
-
-    for (var d = beginningDate; d <= endDate; d.setDate(d.getDate() + 1)) {
-        var year = d.getFullYear();
-        var month = ('0' + (d.getMonth() + 1)).slice(-2);
-        var date = ('0' + (d.getDate() + 1)).slice(-2);
-        var insertedDate = `${year}-${month}-${date}`;
-        data[insertedDate] = []
+    // itinerary is created through the card view and no dates are inputted
+    if (args.beginning.length == 0 && args.end.length == 0) {
+        const result = await context.database.collection('itineraries').insertOne(data)
+            .catch(err => console.error(`Create failed with error: ${err}`))
     }
+    // itinerary is created through "/create/itinerary"
+    else {
+        // YYYY-MM-DD
+        const beginningDate = new Date(args.beginning);
+        const endDate = new Date(args.end);
 
-    const result = await context.database.collection('itineraries').insertOne(data)
-        .catch(err => console.error(`Create failed with error: ${err}`))
+        for (var d = beginningDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+            var year = d.getFullYear();
+            var month = ('0' + (d.getMonth() + 1)).slice(-2);
+            var date = ('0' + (d.getDate() + 1)).slice(-2);
+            var insertedDate = `${year}-${month}-${date}`;
+            data[insertedDate] = []
+        }
+
+        const result = await context.database.collection('itineraries').insertOne(data)
+            .catch(err => console.error(`Create failed with error: ${err}`))
+    }
 
     return result.ops[0]
 }
