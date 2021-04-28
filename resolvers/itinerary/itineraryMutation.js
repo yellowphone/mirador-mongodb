@@ -46,6 +46,19 @@ const createItinerary = async (parent, args, context, info) => {
     return result.modifiedCount;
 }
 
+const swapElementsInItinerary = async (parent, args, context, info) => {
+    const document = await context.database.collection('itineraries').findOne({_id: new ObjectID(args.id)})
+
+    const filter = { _id: new ObjectID(args.id) }
+    let data = {}
+    data[`${args.date}.${args.firstIndex}`] = document[`${args.date}`][`${args.secondIndex}`]
+    data[`${args.date}.${args.secondIndex}`] = document[`${args.date}`][`${args.firstIndex}`]
+
+    const result = await context.database.collection('itineraries').updateOne(filter, { $set: data })
+        .catch(err => console.error(`Update failed with error: ${err}`))
+    return result.modifiedCount;
+}
+
 /**
  * @argument id The unique identifier for the mongodb document
  * @argument date The date array the element wants to delete from
@@ -78,6 +91,7 @@ const deleteItinerary = async (parent, args, context, info) => {
 module.exports = {
     createItinerary,
     insertElementToItinerary,
+    swapElementsInItinerary,
     deleteElementFromItinerary,
     deleteItinerary
 }

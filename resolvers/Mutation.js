@@ -1,6 +1,7 @@
 const {
     createItinerary,
     insertElementToItinerary,
+    swapElementsInItinerary,
     deleteElementFromItinerary,
     deleteItinerary
 } = require('./itinerary/itineraryMutation')
@@ -15,6 +16,7 @@ const {
 module.exports = {
     createItinerary,
     insertElementToItinerary,
+    swapElementsInItinerary,
     deleteElementFromItinerary,
     deleteItinerary,
     createBlog,
