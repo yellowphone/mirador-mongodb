@@ -48,11 +48,13 @@ const createItinerary = async (parent, args, context, info) => {
 
 const swapElementsInItinerary = async (parent, args, context, info) => {
     const document = await context.database.collection('itineraries').findOne({_id: new ObjectID(args.id)})
-
+    console.log(document)
     const filter = { _id: new ObjectID(args.id) }
+    const newElem = document[`${args.date}`]
+    const [removed] = newElem.splice(args.firstIndex, 1);
+    newElem.splice(args.secondIndex, 0, removed);
     let data = {}
-    data[`${args.date}.${args.firstIndex.toString()}`] = document[`${args.date}`][`${args.secondIndex.toString()}`]
-    data[`${args.date}.${args.secondIndex.toString()}`] = document[`${args.date}`][`${args.firstIndex.toString()}`]
+    data[`${args.date}`] = newElem
 
     const result = await context.database.collection('itineraries').updateOne(filter, { $set: data })
         .catch(err => console.error(`Update failed with error: ${err}`))
