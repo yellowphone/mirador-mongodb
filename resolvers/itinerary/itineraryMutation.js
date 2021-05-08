@@ -48,7 +48,6 @@ const createItinerary = async (parent, args, context, info) => {
 
 const swapElementsInItinerary = async (parent, args, context, info) => {
     const document = await context.database.collection('itineraries').findOne({_id: new ObjectID(args.id)})
-    console.log(document)
     const filter = { _id: new ObjectID(args.id) }
     const newElem = document[`${args.date}`]
     const [removed] = newElem.splice(args.firstIndex, 1);
