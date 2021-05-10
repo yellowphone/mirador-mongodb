@@ -9,6 +9,7 @@ const {
 const {
     createBlog,
     insertElementToBlog,
+    swapElementsInBlog,
     deleteElementFromBlog,
     deleteBlog
 } = require('./blog/blogMutation')
@@ -21,6 +22,7 @@ module.exports = {
     deleteItinerary,
     createBlog,
     insertElementToBlog,
+    swapElementsInBlog,
     deleteElementFromBlog,
     deleteBlog
 }
