@@ -46,10 +46,9 @@ const deleteElementFromBlog = async (parent, args, context, info) => {
 
 const swapElementsInBlog = async (parent, args, context, info) => {
     const document = await context.database.collection('blogs').findOne({_id: new ObjectID(args.id)})
-    console.log(document)
     const filter = { _id: new ObjectID(args.id) }
-    const [removed] = document.splice(args.firstIndex, 1);
-    document.splice(args.secondIndex, 0, removed);
+    const [removed] = document.content.splice(args.firstIndex, 1);
+    document.content.splice(args.secondIndex, 0, removed);
 
     const result = await context.database.collection('blogs').updateOne(filter, { $set: document })
         .catch(err => console.error(`Update failed with error: ${err}`))
