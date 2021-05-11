@@ -44,6 +44,11 @@ const deleteElementFromBlog = async (parent, args, context, info) => {
     return result.modifiedCount;
 }
 
+/**
+ * @argument id The unique identifier for the mongodb document
+ * @argument firstIndex The first index to remove the element from
+ * @argument secondIndex The second index to insert the removed element into
+ */
 const swapElementsInBlog = async (parent, args, context, info) => {
     const document = await context.database.collection('blogs').findOne({_id: new ObjectID(args.id)})
     const filter = { _id: new ObjectID(args.id) }
