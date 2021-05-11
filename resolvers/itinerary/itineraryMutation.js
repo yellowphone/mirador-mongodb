@@ -1,8 +1,11 @@
 const mongodb = require('mongodb')
 const ObjectID = mongodb.ObjectId;
 
+/**
+ * @argument beginning The beginning date of the itinerary
+ * @argument end The end date of the itinerary
+ */
 const createItinerary = async (parent, args, context, info) => {
-
     const data = {}
 
     // itinerary is created through "/create/itinerary"
@@ -46,6 +49,12 @@ const createItinerary = async (parent, args, context, info) => {
     return result.modifiedCount;
 }
 
+/**
+ * @argument id The unique identifier for the mongodb document
+ * @argument date The date array the element wants to push to
+ * @argument firstIndex The first index to remove the element from
+ * @argument secondIndex The second index to insert the removed element into
+ */
 const swapElementsInItinerary = async (parent, args, context, info) => {
     const document = await context.database.collection('itineraries').findOne({_id: new ObjectID(args.id)})
     const filter = { _id: new ObjectID(args.id) }
