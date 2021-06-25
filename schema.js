@@ -6,6 +6,7 @@ const typeDefs = gql`
     type Mutation {
         createItinerary(beginning: String, end: String): Json
         insertElementToItinerary(id: String, date: String, element: Json): String
+        updateItineraryDate(id: String, beginning: String, end: String): Json
         swapElementsInItinerary(id: String, date: String, firstIndex: Int, secondIndex: Int): String
         deleteElementFromItinerary(id: String, date: String, index: Int): String
         deleteItinerary(id: String): String
