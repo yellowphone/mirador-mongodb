@@ -49,6 +49,11 @@ const insertElementToItinerary = async (parent, args, context, info) => {
     return result.modifiedCount;
 }
 
+/**
+ * @argument id The unique identifier for the mongodb document
+ * @argument beginning The new beginning date of the itinerary
+ * @argument end The new end date of the itinerary
+ */
 const updateItineraryDate = async (parent, args, context, info) => {
     const document = await context.database.collection('itineraries').findOne({_id: new ObjectID(args.id)})
     const filter = { _id: new ObjectID(args.id) }  
