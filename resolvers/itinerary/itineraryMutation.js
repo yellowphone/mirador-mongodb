@@ -39,7 +39,7 @@ const createItinerary = async (parent, args, context, info) => {
  * @argument date The date array the element wants to push to
  * @argument element The JSON sub-element for Itinerary content (experience, txt, image, etc.)
  */
- const insertElementToItinerary = async (parent, args, context, info) => {
+const insertElementToItinerary = async (parent, args, context, info) => {
     const filter = { _id: new ObjectID(args.id) }  
     var data = {}
     data[`${args.date}`] = args.element
@@ -47,6 +47,55 @@ const createItinerary = async (parent, args, context, info) => {
     const result = await context.database.collection('itineraries').updateOne(filter, { $push: data })
         .catch(err => console.error(`Update failed with error: ${err}`))
     return result.modifiedCount;
+}
+
+/**
+ * @argument id The unique identifier for the mongodb document
+ * @argument beginning The new beginning date of the itinerary
+ * @argument end The new end date of the itinerary
+ */
+const updateItineraryDate = async (parent, args, context, info) => {
+    const document = await context.database.collection('itineraries').findOne({_id: new ObjectID(args.id)})
+    const filter = { _id: new ObjectID(args.id) }  
+
+    // Date format: YYYY-MM-DD
+    const beginningDate = new Date(args.beginning);
+    const endDate = new Date(args.end);
+
+    var outOfRangeDateChecker = []
+
+    // inserting new dates
+    for (var d = beginningDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+        var year = d.getFullYear();
+        var month = ('0' + (d.getMonth() + 1)).slice(-2);
+        var date = ('0' + (d.getDate() + 1)).slice(-2);
+        var insertedDate = `${year}-${month}-${date}`;
+        if (document[insertedDate] === undefined) {
+            document[insertedDate] = []
+        }
+        outOfRangeDateChecker.push(insertedDate);
+    }
+
+    // removing old dates that don't overlap
+    for (var i in document) {
+        if (i !== "_id" && !outOfRangeDateChecker.includes(i)) {
+            delete document[i]
+        }
+    }
+
+    // sorting
+    const ordered = Object.keys(document).sort().reduce(
+        (obj, key) => { 
+          obj[key] = document[key]; 
+          return obj;
+        }, 
+        {}
+      );
+
+    const result = await context.database.collection('itineraries').replaceOne(filter, ordered)
+        .catch(err => console.error(`Update failed with error: ${err}`));
+
+    return result.ops[0];
 }
 
 /**
@@ -101,6 +150,7 @@ const deleteItinerary = async (parent, args, context, info) => {
 module.exports = {
     createItinerary,
     insertElementToItinerary,
+    updateItineraryDate,
     swapElementsInItinerary,
     deleteElementFromItinerary,
     deleteItinerary

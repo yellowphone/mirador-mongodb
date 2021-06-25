@@ -1,6 +1,7 @@
 const {
     createItinerary,
     insertElementToItinerary,
+    updateItineraryDate,
     swapElementsInItinerary,
     deleteElementFromItinerary,
     deleteItinerary
@@ -17,6 +18,7 @@ const {
 module.exports = {
     createItinerary,
     insertElementToItinerary,
+    updateItineraryDate,
     swapElementsInItinerary,
     deleteElementFromItinerary,
     deleteItinerary,
