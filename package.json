@@ -1,7 +1,7 @@
 {
   "name": "mirador-mongodb",
   "version": "1.0.0",
-  "description": "A Mirador service that supports CRUD operations for Blog and Itinerary data with MongoDB",
+  "description": "A Mirador service that supports CRUD operations for Blog and Trip data with MongoDB",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

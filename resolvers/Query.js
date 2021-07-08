@@ -1,12 +1,12 @@
 const {
-    findItinerary
-} = require('./itinerary/itineraryQuery')
+    findTrip
+} = require('./trip/tripQuery')
 
 const {
     findBlog
 } = require('./blog/blogQuery')
 
 module.exports = {
-    findItinerary,
+    findTrip,
     findBlog
 }
