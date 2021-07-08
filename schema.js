@@ -4,12 +4,12 @@ const typeDefs = gql`
     scalar Json
 
     type Mutation {
-        createItinerary(beginning: String, end: String): Json
-        insertElementToItinerary(id: String, date: String, element: Json): String
-        updateItineraryDate(id: String, beginning: String, end: String): Json
-        swapElementsInItinerary(id: String, date: String, firstIndex: Int, secondIndex: Int): String
-        deleteElementFromItinerary(id: String, date: String, index: Int): String
-        deleteItinerary(id: String): String
+        createTrip(beginning: String, end: String): Json
+        insertElementToTrip(id: String, date: String, element: Json): String
+        updateTripDate(id: String, beginning: String, end: String): Json
+        swapElementsInTrip(id: String, date: String, firstIndex: Int, secondIndex: Int): String
+        deleteElementFromTrip(id: String, date: String, index: Int): String
+        deleteTrip(id: String): String
         createBlog: String
         insertElementToBlog(id: String, element: Json): String
         swapElementsInBlog(id: String, firstIndex: Int, secondIndex: Int): String
@@ -18,7 +18,7 @@ const typeDefs = gql`
     }
 
     type Query {
-        findItinerary(id: String): Json
+        findTrip(id: String): Json
         findBlog(id: String): Json
     }
 `

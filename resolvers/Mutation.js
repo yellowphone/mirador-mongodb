@@ -1,11 +1,11 @@
 const {
-    createItinerary,
-    insertElementToItinerary,
-    updateItineraryDate,
-    swapElementsInItinerary,
-    deleteElementFromItinerary,
-    deleteItinerary
-} = require('./itinerary/itineraryMutation')
+    createTrip,
+    insertElementToTrip,
+    updateTripDate,
+    swapElementsInTrip,
+    deleteElementFromTrip,
+    deleteTrip
+} = require('./trip/tripMutation')
 
 const {
     createBlog,
@@ -16,12 +16,12 @@ const {
 } = require('./blog/blogMutation')
 
 module.exports = {
-    createItinerary,
-    insertElementToItinerary,
-    updateItineraryDate,
-    swapElementsInItinerary,
-    deleteElementFromItinerary,
-    deleteItinerary,
+    createTrip,
+    insertElementToTrip,
+    updateTripDate,
+    swapElementsInTrip,
+    deleteElementFromTrip,
+    deleteTrip,
     createBlog,
     insertElementToBlog,
     swapElementsInBlog,

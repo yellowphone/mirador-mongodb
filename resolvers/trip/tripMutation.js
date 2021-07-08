@@ -2,13 +2,13 @@ const mongodb = require('mongodb')
 const ObjectID = mongodb.ObjectId;
 
 /**
- * @argument beginning The beginning date of the itinerary
- * @argument end The end date of the itinerary
+ * @argument beginning The beginning date of the trip
+ * @argument end The end date of the trip
  */
-const createItinerary = async (parent, args, context, info) => {
+const createTrip = async (parent, args, context, info) => {
     const data = {}
 
-    // itinerary is created through "/create/itinerary"
+    // trip is created through "/create/trip"
     if (args.beginning && args.end) {
         // Date format: YYYY-MM-DD
         const beginningDate = new Date(args.beginning);
@@ -22,13 +22,13 @@ const createItinerary = async (parent, args, context, info) => {
             data[insertedDate] = []
         }
 
-        const result = await context.database.collection('itineraries').insertOne(data)
+        const result = await context.database.collection('trips').insertOne(data)
             .catch(err => console.error(`Create failed with error: ${err}`))
         return result.ops[0]
     }
-    // itinerary is created through the card view and no dates are inputted
+    // trip is created through the card view and no dates are inputted
     else {
-        const result = await context.database.collection('itineraries').insertOne(data)
+        const result = await context.database.collection('trips').insertOne(data)
             .catch(err => console.error(`Create failed with error: ${err}`))
         return result.ops[0]
     }
@@ -37,25 +37,25 @@ const createItinerary = async (parent, args, context, info) => {
 /**
  * @argument id The unique identifier for the mongodb document
  * @argument date The date array the element wants to push to
- * @argument element The JSON sub-element for Itinerary content (experience, txt, image, etc.)
+ * @argument element The JSON sub-element for Trip content (experience, txt, image, etc.)
  */
-const insertElementToItinerary = async (parent, args, context, info) => {
+const insertElementToTrip = async (parent, args, context, info) => {
     const filter = { _id: new ObjectID(args.id) }  
     var data = {}
     data[`${args.date}`] = args.element
 
-    const result = await context.database.collection('itineraries').updateOne(filter, { $push: data })
+    const result = await context.database.collection('trips').updateOne(filter, { $push: data })
         .catch(err => console.error(`Update failed with error: ${err}`))
     return result.modifiedCount;
 }
 
 /**
  * @argument id The unique identifier for the mongodb document
- * @argument beginning The new beginning date of the itinerary
- * @argument end The new end date of the itinerary
+ * @argument beginning The new beginning date of the trip
+ * @argument end The new end date of the trip
  */
-const updateItineraryDate = async (parent, args, context, info) => {
-    const document = await context.database.collection('itineraries').findOne({_id: new ObjectID(args.id)})
+const updateTripDate = async (parent, args, context, info) => {
+    const document = await context.database.collection('trips').findOne({_id: new ObjectID(args.id)})
     const filter = { _id: new ObjectID(args.id) }  
 
     // Date format: YYYY-MM-DD
@@ -92,7 +92,7 @@ const updateItineraryDate = async (parent, args, context, info) => {
         {}
       );
 
-    const result = await context.database.collection('itineraries').replaceOne(filter, ordered)
+    const result = await context.database.collection('trips').replaceOne(filter, ordered)
         .catch(err => console.error(`Update failed with error: ${err}`));
 
     return result.ops[0];
@@ -104,8 +104,8 @@ const updateItineraryDate = async (parent, args, context, info) => {
  * @argument firstIndex The first index to remove the element from
  * @argument secondIndex The second index to insert the removed element into
  */
-const swapElementsInItinerary = async (parent, args, context, info) => {
-    const document = await context.database.collection('itineraries').findOne({_id: new ObjectID(args.id)})
+const swapElementsInTrip = async (parent, args, context, info) => {
+    const document = await context.database.collection('trips').findOne({_id: new ObjectID(args.id)})
     const filter = { _id: new ObjectID(args.id) }
     const newElem = document[`${args.date}`]
     const [removed] = newElem.splice(args.firstIndex, 1);
@@ -113,7 +113,7 @@ const swapElementsInItinerary = async (parent, args, context, info) => {
     let data = {}
     data[`${args.date}`] = newElem
 
-    const result = await context.database.collection('itineraries').updateOne(filter, { $set: data })
+    const result = await context.database.collection('trips').updateOne(filter, { $set: data })
         .catch(err => console.error(`Update failed with error: ${err}`))
     return result.modifiedCount;
 }
@@ -123,35 +123,35 @@ const swapElementsInItinerary = async (parent, args, context, info) => {
  * @argument date The date array the element wants to delete from
  * @argument index The index of the JSON sub-element
  */
- const deleteElementFromItinerary = async (parent, args, context, info) => {
+ const deleteElementFromTrip = async (parent, args, context, info) => {
     const filter = { _id: new ObjectID(args.id) }    
     var dataForUnset = {}
     dataForUnset[`${args.date}.${args.index}`] = 1
     var dataForPull = {}
     dataForPull[`${args.date}`] = null
 
-    await context.database.collection('itineraries').updateOne(filter, { $unset: dataForUnset })
+    await context.database.collection('trips').updateOne(filter, { $unset: dataForUnset })
         .catch(err => console.error(`Update failed with error: ${err}`))
 
-    const result = await context.database.collection('itineraries').updateOne(filter, { $pull: dataForPull })
+    const result = await context.database.collection('trips').updateOne(filter, { $pull: dataForPull })
         .catch(err => console.error(`Update failed with error: ${err}`))
 
     return result.modifiedCount;
 }
 
 
-const deleteItinerary = async (parent, args, context, info) => {
-    const result = await context.database.collection('itineraries').deleteOne({_id: new ObjectID(args.id)})
+const deleteTrip = async (parent, args, context, info) => {
+    const result = await context.database.collection('trips').deleteOne({_id: new ObjectID(args.id)})
         .catch(err => console.error(`Delete failed with error: ${err}`))
 
     return result.deletedCount
 }
 
 module.exports = {
-    createItinerary,
-    insertElementToItinerary,
-    updateItineraryDate,
-    swapElementsInItinerary,
-    deleteElementFromItinerary,
-    deleteItinerary
+    createTrip,
+    insertElementToTrip,
+    updateTripDate,
+    swapElementsInTrip,
+    deleteElementFromTrip,
+    deleteTrip
 }
