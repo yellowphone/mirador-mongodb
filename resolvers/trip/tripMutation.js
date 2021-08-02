@@ -12,12 +12,14 @@ const createTrip = async (parent, args, context, info) => {
     if (args.beginning && args.end) {
         // Date format: YYYY-MM-DD
         const beginningDate = new Date(args.beginning);
+        beginningDate.setDate(beginningDate.getDate() + 1);
         const endDate = new Date(args.end);
+        endDate.setDate(endDate.getDate() + 1);
 
         for (var d = beginningDate; d <= endDate; d.setDate(d.getDate() + 1)) {
             var year = d.getFullYear();
             var month = ('0' + (d.getMonth() + 1)).slice(-2);
-            var date = ('0' + (d.getDate() + 1)).slice(-2);
+            var date = ('0' + (d.getDate())).slice(-2);
             var insertedDate = `${year}-${month}-${date}`;
             data[insertedDate] = []
         }
@@ -60,7 +62,9 @@ const updateTripDate = async (parent, args, context, info) => {
 
     // Date format: YYYY-MM-DD
     const beginningDate = new Date(args.beginning);
+    beginningDate.setDate(beginningDate.getDate() + 1);
     const endDate = new Date(args.end);
+    endDate.setDate(endDate.getDate() + 1);
 
     var outOfRangeDateChecker = []
 
@@ -68,7 +72,7 @@ const updateTripDate = async (parent, args, context, info) => {
     for (var d = beginningDate; d <= endDate; d.setDate(d.getDate() + 1)) {
         var year = d.getFullYear();
         var month = ('0' + (d.getMonth() + 1)).slice(-2);
-        var date = ('0' + (d.getDate() + 1)).slice(-2);
+        var date = ('0' + (d.getDate())).slice(-2);
         var insertedDate = `${year}-${month}-${date}`;
         if (document[insertedDate] === undefined) {
             document[insertedDate] = []
