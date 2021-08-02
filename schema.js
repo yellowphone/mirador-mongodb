@@ -10,6 +10,7 @@ const typeDefs = gql`
         swapElementsInTrip(id: String, date: String, firstIndex: Int, secondIndex: Int): String
         deleteElementFromTrip(id: String, date: String, index: Int): String
         deleteTrip(id: String): String
+        
         createBlog: String
         insertElementToBlog(id: String, element: Json): String
         swapElementsInBlog(id: String, firstIndex: Int, secondIndex: Int): String
