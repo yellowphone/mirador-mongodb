@@ -7,7 +7,7 @@ const ObjectID = mongodb.ObjectId;
  */
 const createTrip = async (parent, args, context, info) => {
     const data = {}
-    data['notes'] = {}
+    data['notes'] = []
     data['trip'] = {}
 
     // trip is created through "/create/trip"
@@ -119,8 +119,6 @@ const swapElementsInTrip = async (parent, args, context, info) => {
     const document = await context.database.collection('trips').findOne({_id: new ObjectID(args.id)})
     const filter = { _id: new ObjectID(args.id) }
     const newElem = document['trip'][`${args.date}`]
-    console.log(document)
-    console.log(newElem)
     const [removed] = newElem.splice(args.firstIndex, 1);
     newElem.splice(args.secondIndex, 0, removed);
     let data = {}
@@ -152,6 +150,61 @@ const swapElementsInTrip = async (parent, args, context, info) => {
     return result.modifiedCount;
 }
 
+/**
+ * @argument id The unique identifier for the mongodb document
+ * @argument date The date array the element wants to push to
+ * @argument element The JSON sub-element for Trip content (experience, txt, image, etc.)
+ */
+const insertElementToNotes = async (parent, args, context, info) => {
+    const filter = { _id: new ObjectID(args.id) }  
+    var data = {}
+    data[`notes`] = args.element
+
+    const result = await context.database.collection('trips').updateOne(filter, { $push: data })
+        .catch(err => console.error(`Update failed with error: ${err}`))
+    return result.modifiedCount;
+}
+
+/**
+ * @argument id The unique identifier for the mongodb document
+ * @argument date The date array the element wants to push to
+ * @argument firstIndex The first index to remove the element from
+ * @argument secondIndex The second index to insert the removed element into
+ */
+const swapElementsInNotes = async (parent, args, context, info) => {
+    const document = await context.database.collection('trips').findOne({_id: new ObjectID(args.id)})
+    const filter = { _id: new ObjectID(args.id) }
+    const newElem = document['notes']
+    const [removed] = newElem.splice(args.firstIndex, 1);
+    newElem.splice(args.secondIndex, 0, removed);
+    let data = {}
+    data[`notes`] = newElem
+
+    const result = await context.database.collection('trips').updateOne(filter, { $set: data })
+        .catch(err => console.error(`Update failed with error: ${err}`))
+    return result.modifiedCount;
+}
+
+/**
+ * @argument id The unique identifier for the mongodb document
+ * @argument date The date array the element wants to delete from
+ * @argument index The index of the JSON sub-element
+ */
+const deleteElementFromNotes = async (parent, args, context, info) => {
+    const filter = { _id: new ObjectID(args.id) }    
+    var dataForUnset = {}
+    dataForUnset[`notes.${args.index}`] = 1
+    var dataForPull = {}
+    dataForPull[`notes`] = null
+
+    await context.database.collection('trips').updateOne(filter, { $unset: dataForUnset })
+        .catch(err => console.error(`Update failed with error: ${err}`))
+
+    const result = await context.database.collection('trips').updateOne(filter, { $pull: dataForPull })
+        .catch(err => console.error(`Update failed with error: ${err}`))
+
+    return result.modifiedCount;
+}
 
 const deleteTrip = async (parent, args, context, info) => {
     const result = await context.database.collection('trips').deleteOne({_id: new ObjectID(args.id)})
@@ -166,5 +219,8 @@ module.exports = {
     updateTripDate,
     swapElementsInTrip,
     deleteElementFromTrip,
+    insertElementToNotes,
+    swapElementsInNotes,
+    deleteElementFromNotes,
     deleteTrip
 }

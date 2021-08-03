@@ -9,6 +9,9 @@ const typeDefs = gql`
         updateTripDate(id: String, beginning: String, end: String): Json
         swapElementsInTrip(id: String, date: String, firstIndex: Int, secondIndex: Int): String
         deleteElementFromTrip(id: String, date: String, index: Int): String
+        insertElementToNotes(id: String, element: Json): String
+        swapElementsInNotes(id: String, firstIndex: Int, secondIndex: Int): String
+        deleteElementFromNotes(id: String, index: Int): String
         deleteTrip(id: String): String
         
         createBlog: String
