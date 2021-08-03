@@ -7,6 +7,8 @@ const ObjectID = mongodb.ObjectId;
  */
 const createTrip = async (parent, args, context, info) => {
     const data = {}
+    data['notes'] = {}
+    data['trip'] = {}
 
     // trip is created through "/create/trip"
     if (args.beginning && args.end) {
@@ -21,9 +23,9 @@ const createTrip = async (parent, args, context, info) => {
             var month = ('0' + (d.getMonth() + 1)).slice(-2);
             var date = ('0' + (d.getDate())).slice(-2);
             var insertedDate = `${year}-${month}-${date}`;
-            data[insertedDate] = []
+            data['trip'][insertedDate] = []
         }
-
+        
         const result = await context.database.collection('trips').insertOne(data)
             .catch(err => console.error(`Create failed with error: ${err}`))
         return result.ops[0]
@@ -44,7 +46,7 @@ const createTrip = async (parent, args, context, info) => {
 const insertElementToTrip = async (parent, args, context, info) => {
     const filter = { _id: new ObjectID(args.id) }  
     var data = {}
-    data[`${args.date}`] = args.element
+    data[`trip.${args.date}`] = args.element
 
     const result = await context.database.collection('trips').updateOne(filter, { $push: data })
         .catch(err => console.error(`Update failed with error: ${err}`))
@@ -74,29 +76,34 @@ const updateTripDate = async (parent, args, context, info) => {
         var month = ('0' + (d.getMonth() + 1)).slice(-2);
         var date = ('0' + (d.getDate())).slice(-2);
         var insertedDate = `${year}-${month}-${date}`;
-        if (document[insertedDate] === undefined) {
-            document[insertedDate] = []
+        if (document['trip'][insertedDate] === undefined) {
+            document['trip'][insertedDate] = []
         }
         outOfRangeDateChecker.push(insertedDate);
     }
 
     // removing old dates that don't overlap
-    for (var i in document) {
-        if (i !== "_id" && !outOfRangeDateChecker.includes(i)) {
-            delete document[i]
+    for (var i in document['trip']) {
+        if (!outOfRangeDateChecker.includes(i)) {
+            delete document['trip'][i]
         }
     }
 
     // sorting
-    const ordered = Object.keys(document).sort().reduce(
+    const ordered = Object.keys(document['trip']).sort().reduce(
         (obj, key) => { 
-          obj[key] = document[key]; 
+          obj[key] = document['trip'][key]; 
           return obj;
         }, 
         {}
-      );
+    );
 
-    const result = await context.database.collection('trips').replaceOne(filter, ordered)
+    const newDocument = {
+        "trip": ordered,
+        "notes": document['notes']
+    }
+
+    const result = await context.database.collection('trips').replaceOne(filter, newDocument)
         .catch(err => console.error(`Update failed with error: ${err}`));
 
     return result.ops[0];
@@ -111,11 +118,13 @@ const updateTripDate = async (parent, args, context, info) => {
 const swapElementsInTrip = async (parent, args, context, info) => {
     const document = await context.database.collection('trips').findOne({_id: new ObjectID(args.id)})
     const filter = { _id: new ObjectID(args.id) }
-    const newElem = document[`${args.date}`]
+    const newElem = document['trip'][`${args.date}`]
+    console.log(document)
+    console.log(newElem)
     const [removed] = newElem.splice(args.firstIndex, 1);
     newElem.splice(args.secondIndex, 0, removed);
     let data = {}
-    data[`${args.date}`] = newElem
+    data[`trip.${args.date}`] = newElem
 
     const result = await context.database.collection('trips').updateOne(filter, { $set: data })
         .catch(err => console.error(`Update failed with error: ${err}`))
@@ -130,9 +139,9 @@ const swapElementsInTrip = async (parent, args, context, info) => {
  const deleteElementFromTrip = async (parent, args, context, info) => {
     const filter = { _id: new ObjectID(args.id) }    
     var dataForUnset = {}
-    dataForUnset[`${args.date}.${args.index}`] = 1
+    dataForUnset[`trip.${args.date}.${args.index}`] = 1
     var dataForPull = {}
-    dataForPull[`${args.date}`] = null
+    dataForPull[`trip.${args.date}`] = null
 
     await context.database.collection('trips').updateOne(filter, { $unset: dataForUnset })
         .catch(err => console.error(`Update failed with error: ${err}`))
