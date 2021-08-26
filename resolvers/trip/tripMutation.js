@@ -256,5 +256,7 @@ module.exports = {
     insertElementToNotes,
     swapElementsInNotes,
     deleteElementFromNotes,
+    insertNoteElementIntoTrip,
+    insertTripElementIntoNotes,
     deleteTrip
 }
