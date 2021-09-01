@@ -7,6 +7,8 @@ const {
     insertElementToNotes,
     swapElementsInNotes,
     deleteElementFromNotes,
+    insertNoteElementIntoTrip,
+    insertTripElementIntoNotes,
     deleteTrip
 } = require('./trip/tripMutation')
 
@@ -27,6 +29,8 @@ module.exports = {
     insertElementToNotes,
     swapElementsInNotes,
     deleteElementFromNotes,
+    insertNoteElementIntoTrip,
+    insertTripElementIntoNotes,
     deleteTrip,
     
     createBlog,
